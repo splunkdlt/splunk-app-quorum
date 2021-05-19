@@ -1,0 +1,48 @@
+field_name,event_type,description,questions
+block.author,block,"The ""author"" is an ethereum address for sending block rewards to after a block is sealed/mined.",See what accounts are mining the most? How many miners are there for a particular blockchain?
+block.difficulty,block,In POW this determines how difficult it is to mine a block.  High = harder.  Dynamically adjusted to keep block inteveral.,How much is my difficulty increasing over time.  Did my difficulty drop drastically reducing the strength of the network?
+block.gasLimit,block,Each block is kept to a certain size by limiting how much work can be done by limiting the gas.,
+block.gasUsed,block,Gas used of the gasLimit.  This varies based on how many transactions were submitted for the block.,
+block.hash,block,"In Ethereum, the miners will run the block’s unique header metadata (including timestamp and software version) through a hash function (which will return a fixed-length, scrambled string of numbers and letters that looks random), only changing the ‘nonce value’, which impacts the resulting hash value.  The ""hash"" is this result.",
+block.logsBloom,block,The bloom filter for the logs of this block.  Bloom filters are used to determine if something is not there or might be,
+block.miner,block,This is the address of the miner who mined the block.,
+block.mixHash,block,"Helps prevent DDoS attacks as a ""pre-value"" for validating mining difficulty, must be combined with nonce to validate difficulty (https://ethereum.stackexchange.com/questions/5833/why-do-we-need-both-nonce-and-mixhash-values-in-a-block)",
+block.nonce,block,This is the value found by mining the block that plugged into the hashing algrorithm meets the difficulty,
+block.number,block,The id of the block increases by 1 each block.,
+block.parentHash,block,The hash of the previous block.,
+block.receiptsRoots,block,Root of transaction receipts trie,
+block.sealFields,block,"Created in EIP-95 (https://github.com/ethereum/EIPs/issues/95), is a combination of nonce & mixHash used for both PoA and PoW",
+block.sha3Uncles,block,SHA3 hash of the uncles.,
+block.size,block,The size of the block in bytes.,Is this increasing over time?  This might mean that nodes need more disk space.
+block.stateRoot,block,Root of the state tree.,
+block.timestamp,block,The timestamp of this event.,
+block.totalDifficulty,block,Total difficulty up until this block,
+block.transactions,block,List of transaction hashes included in the block.,
+block.transactionsRoot,block,Root of transaction trie,
+block.uncles,block,When two miners solve the same block the one with a lower amount of work is the uncle.,
+extraData,PoA block,Data the validator can include on the header,
+signature,PoA block,Signature of validator,
+step,PoA block,Clock time between blocks,
+blockHash,transaction,"The ""blockHash"" is the hash created for the block using a hashing function and the nonce.",
+blockNumber,transaction,The blocknumber that contains this transaction.  Each block is made up of many transcations.,
+chainId,transaction,This is a number to define which network to connect to.,"Which network am I connected to eg 1 = mainnet, 3 = ropsten etc"
+condition,transaction,N/A,
+contractCreated,transaction,Boolean denoting if a smart contract was creating in this transaction.,
+creates,transaction,N/A,
+from,transaction,"""from"" is the Ethereum address in which the transaction originated.",How many accounts are there?  Who has the most activity? Look for fraudelent activity? Largest holders? etc
+fromContract,transaction (via Eth-Logger),Boolean identifying if the transaction is from a contract.,
+gas,transaction,Gas is the amount of work that the transaction is doing.  Every operation such as storing a variable uses a specific amount of gas.  This is the amount the sender sent with the transaction,How does this transaction compare to others.  Am I using to much gas?  Maybe I need to optimize my contract?
+gasPrice,transaction,This an amount of wei per gas.  Users can increase the amount of wei to get their transaction priority,Is this increasing over time.  ie users competing for transaction priority or Is the network too busy.
+hash,transaction,"In Ethereum, the miners will run the block’s unique header metadata (including timestamp and software version) through a hash function (which will return a fixed-length, scrambled string of numbers and letters that looks random), only changing the ‘nonce value’, which impacts the resulting hash value.  The ""hash"" is this result.",
+input,transaction,Input for smart contract - first 7 bytes is the hash of the function signature. Can apply ABI decoding here.  For private transactions in Quorum the input is the hash of the encrypted contract/transaction data. This means that private data is not stored on-chain and ensures that this data is only accessible to the specified participants.,
+nonce,transaction,Nonce stands for number once.  This defines the order of transactions coming from an address.,"Can be used to show how ""active"" and address is."
+publicKey,transaction,"A special kind of encryption where there is a process for generating two keys at the same time (typically called a private key and a public key), such that documents encrypted using one key can be decrypted with the other. Generally, as suggested by the name, individuals publish their public keys and keep their private keys to themselves.",
+r,transaction,Signature Value can be used to get the public key of the address that signed the transaction,
+raw,transaction,This is the transaction encoded in rlp,
+s,transaction,Signature Value can be used to get the public key of the address that signed the transaction,
+standardV,transaction,N/A,
+to,transaction,The recieving address of the transaction.  Will be null if its a contract creation.,
+toContract,transaction (via Eth-Logger),Boolean identifying if the transaction is to a contract.,
+transactionIndex,transaction,This the index of order in which the transactions were executed in the block.,
+v,transaction,Signature Value can be used to get the public key of the address that signed the transaction.  For Quorum a value of 0x25 or 0x26 denotes a private transaction.,
+value,transaction,The value of eth transferred in wei.,

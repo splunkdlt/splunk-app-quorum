@@ -1,0 +1,14 @@
+<nav search_view="search">
+  <view name="quorum_introduction" default="true"/>
+  <view name="qstats" />
+  <view name="besu_ops"/>
+  <view name="transactions" />
+  <view name="analysis_workspace" />
+  <view name="search" />
+  <view name="data_setup" />
+  <collection label="Other">
+  	<view name="reports" />
+  	<view name="alerts" />
+  	<view name="dashboards" />
+  </collection>
+</nav>

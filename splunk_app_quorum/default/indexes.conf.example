@@ -1,0 +1,10 @@
+[ethereum]
+coldPath = $SPLUNK_DB/ethereum/colddb
+homePath = $SPLUNK_DB/ethereum/db
+thawedPath = $SPLUNK_DB/ethereum/thaweddb
+
+[metrics]
+coldPath = $SPLUNK_DB/metrics/colddb
+homePath = $SPLUNK_DB/metrics/db
+thawedPath = $SPLUNK_DB/metrics/thaweddb
+datatype = metric

@@ -1,0 +1,97 @@
+<dashboard theme="dark">
+  <label>Introduction</label>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <br/>
+          <p>
+            <h2>This page will help you get your data sources configured properly and validate if they are comming in correctly.  Once you have completed these steps the existing dashboards in this App should start working.  These searches and dashboards are just the beginning of what can be monitored in your environment! </h2> 
+            <h3>Please note the links for Macros below are made to work with the "Admin" user.  If you are using another user, you can still edit the Macros by going to Settings --&gt; Advanced Search --&gt; Macros.  </h3> 
+          </p>
+           <p>
+            <h2>In order for these dashboards to work please make sure your data sources are configured correctly by using the <strong>
+                <a href="/app/splunk-app-quorum/data_setup" target="_blank">Data Setup</a>
+              </strong> dashboard.</h2>
+          </p>
+        </center>
+      </html>
+    </panel>
+  </row>
+   <row>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-app-quorum/quorum_data" target="_blank">Raw Data Flow</a>
+          </h1>
+        </center>
+        <center>
+          <img src="/static/app/splunk-app-quorum/q_raw_data_flow.png"/>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-app-quorum/qstats" target="_blank">Infrastructure Health and Monitoring</a>
+          </h1>
+        </center>
+        <center>
+          <img src="/static/app/splunk-app-quorum/q_infrastructure_monitoring.png"/>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-app-quorum/transactions" target="_blank">Transaction Analytics</a>
+          </h1>
+        </center>
+        <center>
+          <img src="/static/app/splunk-app-quorum/q_transaction_analytics.png"/>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-app-quorum/data_setup" target="_blank">Data Setup</a>
+          </h1>
+        </center>
+        <center>
+          <img src="/static/app/splunk-app-quorum/q_data_setup.png"/>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-app-quorum/search?earliest=-60m%40m&amp;latest=now&amp;q=search%20index%3D*" target="_blank">Event Search</a>
+          </h1>
+        </center>
+        <center>
+          <img src="/static/app/splunk-app-quorum/search.png"/>
+        </center>
+      </html>
+    </panel>
+    <panel>
+      <html>
+        <center>
+          <h1>
+            <a href="/app/splunk-app-quorum/analysis_workspace" target="_blank">Metrics Workspace</a>
+          </h1>
+        </center>
+        <center>
+          <img src="/static/app/splunk-app-quorum/metrics.png"/>
+        </center>
+      </html>
+    </panel>
+  </row>
+</dashboard>

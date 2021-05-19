@@ -1,0 +1,11 @@
+[http://ethereum-stats]
+disabled = 0
+index = ethereum
+indexes = ethereum
+token = 11111111-1111-1111-1111-111111111111
+
+[http://ethereum-metrics]
+disabled = 0
+index = metrics
+indexes = metrics
+token = 11111111-1111-1111-1111-111111111113

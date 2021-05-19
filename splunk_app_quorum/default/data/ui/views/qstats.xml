@@ -1,0 +1,727 @@
+<form theme="dark" version="1.1">
+  <label>Qstats</label>
+  <fieldset submitButton="false">
+    <input type="time" searchWhenChanged="true" token="global_time_tok">
+      <label>Time Range</label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+      <change>
+        <eval token="now">now()</eval>
+        <eval token="relative_earliest">relative_time($now$, $earliest$)</eval>
+        <eval token="relative_latest">relative_time($now$, $latest$)</eval>
+        <set token="timeComp_0">-d</set>
+        <eval token="earliest_0">if(isnum($earliest$), relative_time($earliest$, $timeComp_0$), relative_time($relative_earliest$, $timeComp_0$))</eval>
+        <eval token="latest_0">if(isnum($latest$), relative_time($latest$, $timeComp_0$), relative_time($relative_latest$, $timeComp_0$))</eval>
+        <set token="timeComp_1">-1d</set>
+        <eval token="earliest_1">if(isnum($earliest$), relative_time($earliest$, $timeComp_1$), relative_time($relative_earliest$, $timeComp_1$))</eval>
+        <eval token="latest_1">if(isnum($latest$), relative_time($latest$, $timeComp_1$), relative_time($relative_latest$, $timeComp_1$))</eval>
+        <set token="timeComp_2">-1d</set>
+        <eval token="earliest_2">if(isnum($earliest$), relative_time($earliest$, $timeComp_2$), relative_time($relative_earliest$, $timeComp_2$))</eval>
+        <eval token="latest_2">if(isnum($latest$), relative_time($latest$, $timeComp_2$), relative_time($relative_latest$, $timeComp_2$))</eval>
+        <set token="timeComp_3">-1d</set>
+        <eval token="earliest_3">if(isnum($earliest$), relative_time($earliest$, $timeComp_3$), relative_time($relative_earliest$, $timeComp_3$))</eval>
+        <eval token="latest_3">if(isnum($latest$), relative_time($latest$, $timeComp_3$), relative_time($relative_latest$, $timeComp_3$))</eval>
+        <set token="timeComp_5">-1d</set>
+        <eval token="earliest_5">if(isnum($earliest$), relative_time($earliest$, $timeComp_5$), relative_time($relative_earliest$, $timeComp_5$))</eval>
+        <eval token="latest_5">if(isnum($latest$), relative_time($latest$, $timeComp_5$), relative_time($relative_latest$, $timeComp_5$))</eval>
+        <set token="timeComp_6">-1d</set>
+        <eval token="earliest_6">if(isnum($earliest$), relative_time($earliest$, $timeComp_6$), relative_time($relative_earliest$, $timeComp_6$))</eval>
+        <eval token="latest_6">if(isnum($latest$), relative_time($latest$, $timeComp_6$), relative_time($relative_latest$, $timeComp_6$))</eval>
+      </change>
+    </input>
+    <input type="dropdown">
+      <label>Time Span</label>
+      <choice value="auto">auto</choice>
+      <choice value="5s">5s</choice>
+      <choice value="10s">10s</choice>
+      <choice value="30s">30s</choice>
+      <choice value="1m">1m</choice>
+      <choice value="5m">5m</choice>
+      <choice value="10m">10m</choice>
+      <choice value="30m">30m</choice>
+      <choice value="1h">1h</choice>
+      <default>auto</default>
+      <change>
+        <eval token="timechart_span">if($value$ == "auto", "", "span=".$value$)</eval>
+        <eval token="mstats_span">"span=".$value$</eval>
+      </change>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <single>
+        <search>
+          <query>`eth_txn_logs` sourcetype=ethereum:node:info
+| stats dc(enode) as Nodes</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">99</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">-60m</option>
+        <option name="underLabel"># of Quorum Nodes</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <search>
+          <query>`eth_stats_logs` sourcetype=docker:tessera
+| stats dc(container_id) as TxnManagers</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">99</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">-60m</option>
+        <option name="underLabel"># of Txn Managers</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <search>
+          <query>`eth_txn_logs` sourcetype=ethereum:block
+| eval latency = abs(_time - _indextime)
+| timechart partial=f avg(latency) as latency | eval latency=round(latency*1000)</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>7s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">95</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[500,1000,2000]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">-10m</option>
+        <option name="underLabel">Avg Latency All Nodes</option>
+        <option name="unit">ms</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="eth.blockNumber" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS Avg $timechart_span$
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>3s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">99</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x006d9c","0x006d9c"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">-1m</option>
+        <option name="underLabel">Block Height</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <search>
+          <query>`eth_txn_logs` sourcetype=ethereum:transaction
+| stats dc(hash)</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <refresh>11s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">94</option>
+        <option name="rangeColors">["0xf8be34","0x53a051"]</option>
+        <option name="rangeValues">[100]</option>
+        <option name="refresh.display">none</option>
+        <option name="underLabel">Transactions</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/splunk-app-quorum/transactions</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <chart>
+        <search>
+          <query>`eth_txn_logs` sourcetype="ethereum:transaction"
+| eval txn_type=if(v="0x25","private",if(v="0x26","private","public"))
+| stats dc(hash) as txns by txn_type</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>14s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"private":"0x993333","public":"0x006666"}</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">110</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>`eth_txn_logs` (sourcetype=ethereum:block OR sourcetype=ethereum:node:info)
+| eval latency = abs(_time - _indextime)
+| eventstats max(number) as maxBlock
+| eval latencyms=(latency*1000)
+| stats latest(gethInfo.name) AS "nodeName" avg(latency) AS latency sparkline(avg(latencyms)) as "LatencyTrend" latest(number) AS "Last Block" latest(quorumProtocol.consensusMechanism) as consensusMech by host maxBlock
+| eval "Blocks Behind"=maxBlock-'Last Block'
+| eval "Avg Latency"=round(latency*1000)
+| table host nodeName "Avg Latency" "LatencyTrend" "Blocks Behind" "Last Block"
+| fields - maxBlock</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>11s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+        <format type="color" field="latency">
+          <colorPalette type="list">[#53A051,#F8BE34,#F1813F,#DC4E41]</colorPalette>
+          <scale type="threshold">500,1000,2000</scale>
+        </format>
+        <format type="color" field="Uptime">
+          <colorPalette type="list">[#DC4E41,#F1813F,#F8BE34,#B6C75A,#53A051]</colorPalette>
+          <scale type="threshold">90,95,97,99</scale>
+        </format>
+        <format type="number" field="Avg Latency">
+          <option name="unit">ms</option>
+        </format>
+        <format type="color" field="Avg Latency">
+          <colorPalette type="list">[#53A051,#F8BE34,#F1813F,#DC4E41]</colorPalette>
+          <scale type="threshold">500,1000,2000</scale>
+        </format>
+        <format type="number" field="Avg Mining Rate">
+          <option name="precision">0</option>
+        </format>
+        <format type="color" field="Avg Mining Rate">
+          <colorPalette type="minMidMax" maxColor="#3C444D" midColor="#666666" minColor="#AF575A"></colorPalette>
+          <scale type="minMidMax" midType="percentile" midValue="50"></scale>
+        </format>
+        <format type="color" field="Late">
+          <colorPalette type="minMidMax" maxColor="#AF575A" minColor="#3C444D"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <format type="color" field="Blocks Behind">
+          <colorPalette type="minMidMax" maxColor="#AF575A" minColor="#3C444D"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <format field="LatencyTrend" type="sparkline">
+          <option name="type">bar</option>
+          <option name="colorMap">
+            <option name="500:">#ff9900</option>
+            <option name=":499">#339933</option>
+          </option>
+        </format>
+        <drilldown>
+          <set token="t_host">$click.value$</set>
+          <unset token="t_host_errors"></unset>
+          <unset token="t_client_errors"></unset>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row depends="$t_host$">
+    <panel>
+      <title>Hostname</title>
+      <single>
+        <search>
+          <query>| makeresults
+| eval node="$t_host$"
+| table node</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051", "0x0877a6", "0xf8be34", "0xf1813f", "0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <link target="_blank">/en-US/app/search/search?q=search%2520index%253Dmain%2520OR%2520index%253Dgeth%2520host%253D$t_host$&amp;earliest=-24h&amp;latest=now&amp;sid=1541189163.17508&amp;display.page.search.mode=smart&amp;dispatch.sample_ratio=1&amp;workload_pool=</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Host errors</title>
+      <single>
+        <search>
+          <query>`eth_stats_logs` error OR fail* OR warn* OR crit* OR fatal*
+| stats count</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,20,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <set token="t_host_errors">$click.name$</set>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Client errors and warnings</title>
+      <single>
+        <search>
+          <query>`eth_stats_logs`
+| spath
+| search tag=*$t_host$* $t_log_level$
+| stats count</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,10,20]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <drilldown>
+          <set token="t_client_errors">$click.name$</set>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$t_host_errors$">
+      <title>Errors and Failures</title>
+      <event>
+        <search>
+          <query>`eth_stats_logs` error OR fail* OR warn* OR crit* OR fatal*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">10</option>
+        <option name="list.drilldown">none</option>
+        <option name="list.wrap">1</option>
+        <option name="maxLines">5</option>
+        <option name="raw.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">0</option>
+        <option name="table.drilldown">all</option>
+        <option name="table.sortDirection">asc</option>
+        <option name="table.wrap">1</option>
+        <option name="type">raw</option>
+      </event>
+    </panel>
+    <panel depends="$t_client_errors$">
+      <title>Client Logs</title>
+      <input type="multiselect" token="t_log_level">
+        <label>Log Level</label>
+        <choice value="ERROR">Error</choice>
+        <choice value="WARN">Warn</choice>
+        <choice value="INFO">Info</choice>
+        <choice value="DEBUG">Debug</choice>
+        <choice value="DETAIL">Detail</choice>
+        <default>ERROR,WARN</default>
+        <initialValue>ERROR,WARN</initialValue>
+        <delimiter> OR </delimiter>
+      </input>
+      <event>
+        <search>
+          <query>`eth_stats_logs`
+| spath
+| search
+    tag=*$t_host$* $t_log_level$</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">12</option>
+        <option name="list.drilldown">none</option>
+        <option name="list.wrap">1</option>
+        <option name="maxLines">10</option>
+        <option name="raw.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">0</option>
+        <option name="table.drilldown">none</option>
+        <option name="table.sortDirection">asc</option>
+        <option name="table.wrap">1</option>
+        <option name="type">raw</option>
+      </event>
+    </panel>
+  </row>
+  <row depends="$t_host$">
+    <panel>
+      <chart>
+        <title>cpu.usage_rate</title>
+        <search>
+          <query>| mstats avg(_value) as avg WHERE (metric_name="*quorum*$t_host$*.cpu_cumulative_usage" OR metric_name="*splunk1*.cpu_cumulative_usage") AND `system_metrics` span=30s by metric_name
+| sort - metric_name _time
+| streamstats stdev(avg) as dif window=2 by metric_name
+| timechart partial=f limit=20 latest(dif) span=30s by metric_name
+| rename docker.quorum-examples_node* AS node* docker.quorum-examples_txmanager* AS txmanager* docker.quorum-examples_ethlogger* AS ethlogger* docker.splunk1* AS splunk*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#a65c7d"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>memory.usage</title>
+        <search>
+          <query>| mstats avg(_value) as "Avg" WHERE metric_name="*quorum*$t_host$*.memory_usage" AND `system_metrics` $mstats_span$
+| append [
+    | mstats avg(_value) as "Avg (-1d)" WHERE metric_name="*quorum*$t_host$*.memory_usage" AND `system_metrics` earliest=$earliest_2$ latest=$latest_2$ $mstats_span$
+    | eval _time = round(relative_time(_time, "+1d"))
+]
+| timechart first("Avg") as "Avg", first("Avg (-1d)") as "Avg (-1d)" $timechart_span$</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#a65c7d","Avg (-1d)":"#C18EA5"}</option>
+        <option name="charting.fieldDashStyles">{"Avg (-1d)":"shortDot"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>network.tx_bytes</title>
+        <search>
+          <query>| mstats avg(_value) as "Avg" WHERE metric_name="*quorum*$t_host$*.tx_bytes" AND `system_metrics` $mstats_span$
+| append
+    [| mstats avg(_value) as "Avg" WHERE metric_name="*quorum*$t_host$*.tx_bytes" AND `system_metrics` earliest=$earliest_6$ latest=$latest_6$ $mstats_span$
+    | eval _time = round(relative_time(_time, "+1d"))
+        ]
+| timechart first("Avg") as "Avg", first("Avg (-1d)") as "Avg (-1d)" $timechart_span$</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#a65c7d","Avg (-1d)":"#C18EA5"}</option>
+        <option name="charting.fieldDashStyles">{"Avg (-1d)":"shortDot"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>filesystem_usage</title>
+        <search>
+          <query>| mstats avg(_value) as "Avg" WHERE metric_name="*quorum*$t_host$*.fs_usage" AND `system_metrics` $mstats_span$
+| append [
+    | mstats avg(_value) as "Avg (-1d)" WHERE metric_name="*quorum*$t_host$*.fs_usage" AND `system_metrics` earliest=$earliest_3$ latest=$latest_3$ $mstats_span$
+    | eval _time = round(relative_time(_time, "+1d"))
+]
+| timechart first("Avg") as "Avg", first("Avg (-1d)") as "Avg (-1d)" $timechart_span$</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#a65c7d","Avg (-1d)":"#C18EA5"}</option>
+        <option name="charting.fieldDashStyles">{"Avg (-1d)":"shortDot"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>Container Metrics</h1>
+        </center>
+        </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Container CPU Usage - System</title>
+      <chart>
+        <search>
+          <query>| mstats avg(_value) as avg WHERE (metric_name="*quorum*.cpu_cumulative_usage" OR metric_name="*splunk1*.cpu_cumulative_usage")  AND `system_metrics` $mstats_span$ by metric_name
+| sort - metric_name _time
+| streamstats stdev(avg) as dif window=2 by metric_name
+| timechart partial=f limit=30 latest(dif) $timechart_span$ by metric_name
+| rename docker.quorum-examples_node* AS node* docker.quorum-examples_txmanager* AS txmanager* docker.quorum-examples_ethlogger* AS ethlogger* docker.splunk1* AS splunk*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>30s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <search type="annotation">
+          <query>
+                  | mstats avg(_value) as avg WHERE metric_name="cadvisor.*.cpu_cumulative_usage" AND "index"="hyperledger_metrics" span=10s by metric_name
+| sort - metric_name _time
+| streamstats stdev(avg) as dif window=2 by metric_name
+| search metric_name="cadvisor.zoo*" OR metric_name="cadvisor.kafka*" OR metric_name="cadvisor.couch*" OR metric_name="cadvisor.peer*" OR metric_name="cadvisor.cli*" OR metric_name="cadvisor.orderer*"
+| timechart partial=f limit=15 latest(dif) as total span=20s by metric_name
+| sort - _time | addtotals
+| eval Total=round(Total)
+| eval highCPU=if(Total&gt;30000000000,"highCPU_Alert","")
+| search highCPU="highCPU_Alert" | eval annotation_label = highCPU | eval annotation_category = "highCPU" | table _time annotation_label annotation_category
+              </query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.annotation.categoryColors">{"highCPU":"0xff3300","containerDOWN":"0xff0000"}</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.overlayFields">threshold</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">261</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Container Memory Usage</title>
+      <chart>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE (metric_name="*quorum*.memory_usage" OR metric_name="*splunk1*.memory_usage") AND `system_metrics` $mstats_span$ BY "metric_name"
+| timechart avg(_value) as "Avg" agg=max limit=30 $timechart_span$ BY "metric_name"
+| rename docker.quorum-examples_node* AS node* docker.quorum-examples_txmanager* AS txmanager* docker.quorum-examples_ethlogger* AS ethlogger* docker.splunk1* AS splunk*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>30s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisEnd</option>
+        <option name="charting.legend.mode">seriesCompare</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">256</option>
+        <option name="refresh.display">none</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+</form>

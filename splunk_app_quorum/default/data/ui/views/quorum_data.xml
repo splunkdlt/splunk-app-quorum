@@ -1,0 +1,212 @@
+<form theme="dark" version="1.1">
+  <label>Quorum Data</label>
+  <fieldset submitButton="false">
+    <input type="time" token="field1">
+      <label></label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="refresh_token" searchWhenChanged="true">
+      <label>Refresh Interval</label>
+      <choice value="5s">5 Seconds</choice>
+      <choice value="10s">10 Seconds</choice>
+      <choice value="30s">30s</choice>
+      <choice value="1m">1 Minute</choice>
+      <choice value="24h">None</choice>
+      <fieldForLabel>refresh_token</fieldForLabel>
+      <fieldForValue>refresh_token</fieldForValue>
+      <default>1m</default>
+      <initialValue>1m</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <single>
+        <title>Total Invalid Transactions</title>
+        <search>
+          <query>| mstats avg(_value) AS _value WHERE metric_name="eth.geth.metrics.txpool.invalid.Overall" AND "index"="metrics" span=10s
+| stats latest(_value) as "Total Invalid Transactions"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">none</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Average Inbound Traffic (kb)</title>
+        <search>
+          <query>| mstats avg(_value) as _value WHERE metric_name="eth.geth.metrics.p2p.inboundTraffic.avgRate01Min" AND "index"="metrics" span=10s
+| eval kb=_value/1024
+| timechart avg(kb) as "Avg" span=10s</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">none</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Average Outbound Traffic (kb)</title>
+        <search>
+          <query>| mstats avg(_value) as _value WHERE metric_name="eth.geth.metrics.p2p.outboundTraffic.avgRate01Min" AND "index"="metrics" span=10s
+| eval kb=_value/1024
+| timechart avg(kb) as "Avg" span=10s</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">none</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Average Disk Writes (kb)</title>
+        <search>
+          <query>| mstats avg(_value) as _value WHERE metric_name="eth.geth.metrics.system.disk.writedata.avgRate01Min" AND "index"="metrics" span=10s
+| eval kb=_value/1024
+| timechart avg(kb) as "Avg" span=10s</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">none</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Average Disk Reads (kb)</title>
+        <search>
+          <query>| mstats avg(_value) as _value WHERE metric_name="eth.geth.metrics.system.disk.readdata.avgRate01Min" AND "index"="metrics" span=10s
+| eval kb=_value/1024
+| timechart avg(kb) as "Avg" span=10s</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">none</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <viz type="splunk-app-quorum.flow_map_viz">
+        <title>Data Flows: Green=Logs, Blue=Metrics</title>
+        <search>
+          <query>index=*
+| eval to="Splunk"
+| stats count as good by sourcetype, to
+| rename sourcetype as from
+| append
+    [| mstats count WHERE metric_name="*" AND "index"="metrics" span=1m BY "metric_name"
+    | rex field=metric_name "(?&lt;mname&gt;\w+)\."
+    | stats count AS "warn" BY mname
+    | rename mname AS from
+    | eval to="Splunk"
+    | search from!="ethlogger"]</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+          <sampleRatio>10</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="splunk-app-quorum.flow_map_viz.background_color">#ffffff</option>
+        <option name="splunk-app-quorum.flow_map_viz.background_mode">transparent</option>
+        <option name="splunk-app-quorum.flow_map_viz.coarse_positions">yes</option>
+        <option name="splunk-app-quorum.flow_map_viz.labels_as_html">no</option>
+        <option name="splunk-app-quorum.flow_map_viz.line_style">ants</option>
+        <option name="splunk-app-quorum.flow_map_viz.link_color">#738795</option>
+        <option name="splunk-app-quorum.flow_map_viz.link_distance">200</option>
+        <option name="splunk-app-quorum.flow_map_viz.link_label_color">#1a9035</option>
+        <option name="splunk-app-quorum.flow_map_viz.link_opacity">0.5</option>
+        <option name="splunk-app-quorum.flow_map_viz.link_speed">90</option>
+        <option name="splunk-app-quorum.flow_map_viz.link_text_size">0</option>
+        <option name="splunk-app-quorum.flow_map_viz.link_width">1</option>
+        <option name="splunk-app-quorum.flow_map_viz.maxnodes">100</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_bg_color">#333333</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_border_color">#000000</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_border_mode">darker1</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_border_width">1</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_center_force">0.1</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_height">30</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_radius">2</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_repel_force">1000</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_shadow_color">#000000</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_shadow_mode">custom</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_text_color">#C6C6C6</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_text_size">12</option>
+        <option name="splunk-app-quorum.flow_map_viz.node_width">120</option>
+        <option name="splunk-app-quorum.flow_map_viz.particle_blur">0</option>
+        <option name="splunk-app-quorum.flow_map_viz.particle_error_color">#b22b32</option>
+        <option name="splunk-app-quorum.flow_map_viz.particle_good_color">#1a9035</option>
+        <option name="splunk-app-quorum.flow_map_viz.particle_limit">60</option>
+        <option name="splunk-app-quorum.flow_map_viz.particle_size">3</option>
+        <option name="splunk-app-quorum.flow_map_viz.particle_spread">5</option>
+        <option name="splunk-app-quorum.flow_map_viz.particle_warn_color">#006d9c</option>
+        <option name="splunk-app-quorum.flow_map_viz.stop_when_not_visible">yes</option>
+        <option name="height">832</option>
+        <option name="refresh.display">none</option>
+      </viz>
+    </panel>
+    <panel>
+      <table>
+        <search>
+          <query>index=*
+| stats count AS "Event Count" values(sourcetype) as "Event Sourcetypes" sparkline(count) as "Event Sparkline" by host
+| appendcols
+    [| mstats count WHERE metric_name="*" AND "index"="metrics" span=1m BY host
+    | stats sum(count) as "Metrics Count" sparkline(sum(count)) as "Metrics Sparkline" BY host
+    | search (host=node* OR host=cadvisor*)]</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>$refresh_token$</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format field="Event Sparkline" type="sparkline">
+          <option name="lineColor">#000000</option>
+          <option name="fillColor">#53A051</option>
+          <option name="lineWidth">1</option>
+          <option name="height">25</option>
+        </format>
+        <format field="Metrics Sparkline" type="sparkline">
+          <option name="lineColor">#000000</option>
+          <option name="fillColor">#006d9c</option>
+          <option name="lineWidth">1</option>
+          <option name="height">25</option>
+        </format>
+      </table>
+    </panel>
+  </row>
+</form>

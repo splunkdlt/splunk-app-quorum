@@ -1,0 +1,829 @@
+<form theme="dark" version="1.1">
+  <label>Internal Ethlogger Stats</label>
+  <fieldset submitButton="false">
+    <input type="time" searchWhenChanged="true" token="global_time_tok">
+      <label>Time Range</label>
+      <default>
+        <earliest>-6h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown">
+      <label>Time Span</label>
+      <choice value="auto">auto</choice>
+      <choice value="5s">5s</choice>
+      <choice value="10s">10s</choice>
+      <choice value="30s">30s</choice>
+      <choice value="1m">1m</choice>
+      <choice value="5m">5m</choice>
+      <choice value="10m">10m</choice>
+      <choice value="30m">30m</choice>
+      <choice value="1h">1h</choice>
+      <default>auto</default>
+      <change>
+        <eval token="timechart_span">if($value$ == "auto", "", "span=".$value$)</eval>
+        <eval token="mstats_span">"span=".$value$</eval>
+      </change>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+        <h1>
+          <center>System</center>
+        </h1>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>CPU</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.system.cpu.user" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS "ethlogger.internal.system.cpu.user" $timechart_span$
+| fields - _span*
+| append [
+| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.system.cpu.system" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS "ethlogger.internal.system.cpu.system" $timechart_span$
+| fields - _span*
+]
+| selfjoin keepsingle=true _time | rename ethlogger.internal.system.cpu.* AS *</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","ethlogger.internal.system.cpu.user":"#1e93c6","ethlogger.internal.system.cpu.system":"#f2b827","ethlogger.internal.system.mem.heapUsed":"#d6563c","ethlogger.internal.system.mem.rss":"#6a5c9e"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","ethlogger.internal.system.cpu.user":"solid","ethlogger.internal.system.cpu.system":"solid","ethlogger.internal.system.mem.heapUsed":"solid","ethlogger.internal.system.mem.rss":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>MEM</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.system.mem.external" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS "ethlogger.internal.system.mem.external" $timechart_span$
+| fields - _span*
+| append
+    [| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.system.mem.heapTotal" AND index="metrics" $mstats_span$
+    | timechart avg(_value) AS "ethlogger.internal.system.mem.heapTotal" $timechart_span$
+    | fields - _span*
+        ]
+| selfjoin keepsingle=true _time
+| append
+    [| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.system.mem.heapUsed" AND index="metrics" $mstats_span$
+    | timechart avg(_value) AS "ethlogger.internal.system.mem.heapUsed" $timechart_span$
+    | fields - _span*
+        ]
+| selfjoin keepsingle=true _time
+| append
+    [| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.system.mem.rss" AND index="metrics" $mstats_span$
+    | timechart avg(_value) AS "ethlogger.internal.system.mem.rss" $timechart_span$
+    | fields - _span*
+        ]
+| selfjoin keepsingle=true _time
+| rename ethlogger.internal.system.mem.* AS *</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","ethlogger.internal.system.mem.external":"#1e93c6","ethlogger.internal.system.mem.heapTotal":"#f2b827","ethlogger.internal.system.mem.heapUsed":"#d6563c","ethlogger.internal.system.mem.rss":"#6a5c9e"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","ethlogger.internal.system.mem.external":"solid","ethlogger.internal.system.mem.heapTotal":"solid","ethlogger.internal.system.mem.heapUsed":"solid","ethlogger.internal.system.mem.rss":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <single>
+        <title>Uptime</title>
+        <search>
+          <query>| mstats latest(_value) prestats=true WHERE metric_name="ethlogger.internal.system.uptime" AND index="metrics" span=1m
+| stats latest(_value) AS uptime
+| eval uptime = tostring('uptime', "duration")
+| rex field=uptime "(?&lt;uptime_abbr&gt;\S+)\."
+| fields uptime_abbr</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">175</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051", "0x0877a6", "0xf8be34", "0xf1813f", "0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <h1>
+          <center>blockWatcher</center>
+        </h1>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>txProcessTime</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.blockWatcher.txProcessTime.avg" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=10 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","4960c9631241":"#f2b827","5c940b0dd892":"#d6563c","97b2e12a6fdb":"#6a5c9e","b8a7ec85891a":"#31a35f","331285d512f3":"#ed8440","3b499ffcddf6":"#3863a0","23a41e6019ae (-30m)":"#B6D768","331285d512f3 (-30m)":"#D97C8E","3b499ffcddf6 (-30m)":"#8A4F98","4960c9631241 (-30m)":"#32ABE0","5c940b0dd892 (-30m)":"#F5C95C","97b2e12a6fdb (-30m)":"#E07D69","b8a7ec85891a (-30m)":"#867AB2"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","4960c9631241":"solid","5c940b0dd892":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","23a41e6019ae (-30m)":"shortDot","331285d512f3 (-30m)":"shortDot","3b499ffcddf6 (-30m)":"shortDot","4960c9631241 (-30m)":"shortDot","5c940b0dd892 (-30m)":"shortDot","97b2e12a6fdb (-30m)":"shortDot","b8a7ec85891a (-30m)":"shortDot"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>eventProcessTime</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.blockWatcher.eventProcessTime.avg" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","97b2e12a6fdb":"#31a35f","b8a7ec85891a":"#ed8440"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>blockProcessTime</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.blockWatcher.blockProcessTime.avg" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","4960c9631241":"#d6563c","5c940b0dd892":"#6a5c9e","b8a7ec85891a":"#31a35f","3b499ffcddf6":"#ed8440","97b2e12a6fdb":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","4960c9631241":"solid","5c940b0dd892":"solid","b8a7ec85891a":"solid","3b499ffcddf6":"solid","97b2e12a6fdb":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>blocksProcessed</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.blockWatcher.blocksProcessed" AND index="metrics" $mstats_span$ BY host
+| timechart partial=f avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>abortHandles</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.blockWatcher.abortHandles" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>transactionLogEventsProcessed</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.blockWatcher.transactionLogEventsProcessed" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","97b2e12a6fdb":"#31a35f","5c940b0dd892":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","97b2e12a6fdb":"solid","5c940b0dd892":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>transactionsProcessed</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.blockWatcher.transactionsProcessed" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","97b2e12a6fdb":"#31a35f","5c940b0dd892":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","97b2e12a6fdb":"solid","5c940b0dd892":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <h1>
+          <center>ethTransport</center>
+        </h1>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>requestDuration</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.ethTransport.requestDuration.avg" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","331285d512f3":"#1e93c6","3b499ffcddf6":"#f2b827","4960c9631241":"#d6563c","5c940b0dd892":"#6a5c9e","b8a7ec85891a":"#31a35f","23a41e6019ae":"#ed8440","97b2e12a6fdb":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","5c940b0dd892":"solid","b8a7ec85891a":"solid","23a41e6019ae":"solid","97b2e12a6fdb":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>batchSize</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.ethTransport.batchSize.avg" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","331285d512f3":"#1e93c6","4960c9631241":"#f2b827","5c940b0dd892":"#d6563c","97b2e12a6fdb":"#6a5c9e","b8a7ec85891a":"#31a35f","23a41e6019ae":"#ed8440","3b499ffcddf6":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","331285d512f3":"solid","4960c9631241":"solid","5c940b0dd892":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid","23a41e6019ae":"solid","3b499ffcddf6":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>requests</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.ethTransport.requests" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","97b2e12a6fdb":"#31a35f","5c940b0dd892":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","97b2e12a6fdb":"solid","5c940b0dd892":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>errors</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.ethTransport.errors" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","5c940b0dd892":"#31a35f","97b2e12a6fdb":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","5c940b0dd892":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <h1>
+          <center>contractInfoCache</center>
+        </h1>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>size</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.contractInfoCache.size" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","4960c9631241":"#d6563c","97b2e12a6fdb":"#6a5c9e","b8a7ec85891a":"#31a35f","3b499ffcddf6":"#ed8440","5c940b0dd892":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","4960c9631241":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid","3b499ffcddf6":"solid","5c940b0dd892":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>oldSize</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.contractInfoCache.oldSize" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","97b2e12a6fdb":"#31a35f","5c940b0dd892":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","97b2e12a6fdb":"solid","5c940b0dd892":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>misses</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.contractInfoCache.misses" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","97b2e12a6fdb":"#31a35f","5c940b0dd892":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","97b2e12a6fdb":"solid","5c940b0dd892":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>hits</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.contractInfoCache.hits" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","3b499ffcddf6":"#f2b827","5c940b0dd892":"#d6563c","97b2e12a6fdb":"#6a5c9e","b8a7ec85891a":"#31a35f","331285d512f3":"#ed8440","4960c9631241":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","3b499ffcddf6":"solid","5c940b0dd892":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid","331285d512f3":"solid","4960c9631241":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <h1>
+          <center>nodeStatsCollector</center>
+        </h1>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>collectDuration</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.nodeStatsCollector.collectDuration.avg" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=10 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","3b499ffcddf6":"#1e93c6","4960c9631241":"#f2b827","5c940b0dd892":"#d6563c","97b2e12a6fdb":"#6a5c9e","b8a7ec85891a":"#31a35f","23a41e6019ae":"#ed8440","331285d512f3":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","5c940b0dd892":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid","23a41e6019ae":"solid","331285d512f3":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>collectCount</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.nodeStatsCollector.collectCount" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","5c940b0dd892":"#31a35f","97b2e12a6fdb":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","5c940b0dd892":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>infoErrorCount</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.nodeStatsCollector.infoErrorCount" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","5c940b0dd892":"#31a35f","97b2e12a6fdb":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","5c940b0dd892":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>errorCount</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.nodeStatsCollector.errorCount" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","3b499ffcddf6":"#d6563c","4960c9631241":"#6a5c9e","5c940b0dd892":"#31a35f","97b2e12a6fdb":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","3b499ffcddf6":"solid","4960c9631241":"solid","5c940b0dd892":"solid","97b2e12a6fdb":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>infoCollectCount</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.nodeStatsCollector.infoCollectCount" AND index="metrics" $mstats_span$ BY host
+| timechart avg(_value) $timechart_span$ agg=max limit=20 useother=false BY host
+| fields - _span*</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","23a41e6019ae":"#1e93c6","331285d512f3":"#f2b827","4960c9631241":"#d6563c","5c940b0dd892":"#6a5c9e","97b2e12a6fdb":"#31a35f","3b499ffcddf6":"#ed8440","b8a7ec85891a":"#3863a0"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","23a41e6019ae":"solid","331285d512f3":"solid","4960c9631241":"solid","5c940b0dd892":"solid","97b2e12a6fdb":"solid","3b499ffcddf6":"solid","b8a7ec85891a":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <h1>
+          <center>Output</center>
+        </h1>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>metricsHec.batchSizeBytes, metricsHec.batchSizeCompressed</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.output.metricsHec.batchSizeBytes.avg" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS "ethlogger.internal.output.metricsHec.batchSizeBytes.avg" $timechart_span$
+| fields - _span*
+| append [
+| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.output.metricsHec.batchSizeCompressed.avg" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS "ethlogger.internal.output.metricsHec.batchSizeCompressed.avg" $timechart_span$
+| fields - _span*
+]
+| selfjoin keepsingle=true _time</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","ethlogger.internal.output.metricsHec.batchSizeBytes.avg":"#1e93c6","ethlogger.internal.output.metricsHec.batchSizeCompressed.avg":"#f2b827"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","ethlogger.internal.output.metricsHec.batchSizeBytes.avg":"solid","ethlogger.internal.output.metricsHec.batchSizeCompressed.avg":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>metricsHec.errorCount, metricsHec.retryCount</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.output.metricsHec.errorCount" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS "ethlogger.internal.output.metricsHec.errorCount" $timechart_span$
+| fields - _span*
+| append [
+| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.output.metricsHec.retryCount" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS "ethlogger.internal.output.metricsHec.retryCount" $timechart_span$
+| fields - _span*
+]
+| selfjoin keepsingle=true _time</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","ethlogger.internal.output.metricsHec.errorCount":"#1e93c6","ethlogger.internal.output.metricsHec.retryCount":"#f2b827","ethlogger.internal.output.metricsHec.activeFlushingCount":"#d6563c"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","ethlogger.internal.output.metricsHec.errorCount":"solid","ethlogger.internal.output.metricsHec.retryCount":"solid","ethlogger.internal.output.metricsHec.activeFlushingCount":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>eventsHec.batchSizeBytes, eventsHec.batchSizeCompressed</title>
+        <search>
+          <query>| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.output.eventsHec.batchSizeBytes.avg" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS "ethlogger.internal.output.eventsHec.batchSizeBytes.avg" $timechart_span$
+| fields - _span*
+| append [
+| mstats avg(_value) prestats=true WHERE metric_name="ethlogger.internal.output.eventsHec.batchSizeCompressed.avg" AND index="metrics" $mstats_span$
+| timechart avg(_value) AS "ethlogger.internal.output.eventsHec.batchSizeCompressed.avg" $timechart_span$
+| fields - _span*
+]
+| selfjoin keepsingle=true _time</query>
+          <earliest>$global_time_tok.earliest$</earliest>
+          <latest>$global_time_tok.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.includeZero">1</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Avg":"#1e93c6","ethlogger.internal.output.eventsHec.batchSize.avg":"#1e93c6","ethlogger.internal.output.eventsHec.batchSizeBytes.avg":"#f2b827","ethlogger.internal.output.eventsHec.batchSizeCompressed.avg":"#d6563c"}</option>
+        <option name="charting.fieldDashStyles">{"Avg":"solid","ethlogger.internal.output.eventsHec.batchSize.avg":"solid","ethlogger.internal.output.eventsHec.batchSizeBytes.avg":"solid","ethlogger.internal.output.eventsHec.batchSizeCompressed.avg":"solid"}</option>
+        <option name="charting.gridLinesX.showMajorLines">1</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="displayview">analytics_workspace</option>
+        <option name="height">175</option>
+      </chart>
+    </panel>
+  </row>
+</form>

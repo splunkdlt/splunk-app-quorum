@@ -1,0 +1,206 @@
+<dashboard theme="dark" version="1.1">
+  <label>Data Setup</label>
+  <row>
+    <panel>
+      <html>
+       <center>
+          <br/>
+          <p>
+            <h2>This page will help you get your data sources configured properly and validate if they are comming in correctly.  Once you have completed these steps the existing dashboards in this App should start working.  These searches and dashboards are just the beginning of what can be monitored in your environment! </h2>
+            <h3>Please note the links for Macros below are made to work with the "Admin" user.  If you are using another user, you can still edit the Macros by going to Settings --&gt; Advanced Search --&gt; Macros.  </h3>
+          </p>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+            <h1>Step 1: Quorum Blocks, Transactions, and Events</h1>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+          <p>
+            <h2>
+              <strong>Instructions for Gathering Quorum Node, Blocks, Transactions, and Protocol information</strong>
+            </h2>
+          </p>
+       </center>
+             <h2>
+              1. Follow instructions for installing our <a target="_blank" href="https://github.com/splunk/splunk-connect-for-ethereum">Splunk Connect for Ethereum</a>
+            </h2>
+            <h2>2. Edit this <strong>
+                <a href="/manager/splunk-app-quorum/admin/macros/eth_txn_logs?action=edit&amp;ns=splunk-app-quorum&amp;f_ns=splunk-app-quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-app-quorum%2Fadmin%2Fmacros%2Feth_txn_logs" target="_blank">Macro</a>
+              </strong> with your index and sourcetype. By default the macro is set to: "index=ethereum"</h2>
+              <h2>3. If configured correctly you will see data populating the chart to the right.</h2>
+      </html>
+    </panel>
+    <panel>
+      <chart>
+        <search>
+          <query>`eth_txn_logs` | timechart partial=f count by sourcetype | rename transaction as txns</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>1m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.overlayFields">txns</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">150</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+            <h1>Step 2: Quorum Node Logs and Metrics</h1>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+          <p>
+            <h2>
+              <strong>Instructions for Gathering Quorum Logs and Metrics</strong>
+            </h2>
+          </p>
+       </center>
+             <h2>
+              1. These are logs and metrics specific to the Quorum nodes and transaction managers. Specifically, Quorum application logs, Geth metrics, RPC data polled from different Quorum node endpoints (i.e. admin_peers, txpool_content, etc -- see <a target="_blank" href="https://github.com/splunk/splunk-connect-for-ethereum">Splunk Connect for Ethereum</a> for more information). If you need to change these settings you will need to modify /app/splunk-app-quorum/default/inputs.conf
+            </h2>
+            <h2>2. Edit this <strong>
+                <a href="/manager/splunk-app-quorum/admin/macros/eth_stats_logs?action=edit&amp;ns=splunk-app-quorum&amp;f_ns=splunk-app-quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-app-quorum%2Fadmin%2Fmacros%2Feth_stats_logs" target="_blank">Macro</a>
+              </strong> with your index and sourcetype for the quorum logs. By default the macro is set to: "index=main (sourcetype=docker:tessera OR sourcetype=docker:quorum-node)"</h2>
+               <h2>3. Edit this <strong>
+                <a href="/manager/splunk-app-quorum/admin/macros/geth_metrics?action=edit&amp;ns=splunk-app-quorum&amp;f_ns=splunk-app-quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-app-quorum%2Fadmin%2Fmacros%2Fgeth_metrics" target="_blank">Macro</a>
+              </strong> with your index and sourcetype for Geth Metrics. By default the macro is set to: index=metrics AND (metric_name="eth.*"). Note: You will need to <a href="/manager/splunk-app-quorum/data/indexes" target="_blank">create a metrics index</a> if you haven't already.</h2>
+              <h2>4. If configured correctly you will see data populating the chart to the right.</h2>
+      </html>
+    </panel>
+    <panel>
+      <chart>
+        <search>
+          <query>(`eth_stats_logs`)
+| timechart count by sourcetype
+| appendcols
+    [| mstats count WHERE `geth_metrics` span=10s
+    | timechart sum(count) as "ethstats_geth_metrics" ]</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">1</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">1</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+            <h1>Step 3: Infrastructure/System Level Metrics and Logs (optional)</h1>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+       <center>
+            <h2>
+            <strong>Instructions for collecting Infrastructure/System Level Metrics and Logs</strong>
+          </h2>
+       </center>
+       <h2> 1. System metrics such as CPU,MEM,DISK and NETWORK activity provide insight into the underlying infrastructure Quorum nodes are running on. These metrics/logs could come from physical machines, Docker, Kubernetes, IBM IKS, Microsoft Azure, Google’s GCP and AWS Cloudwatch to name a few. Splunk has different Add-ons and connectors for each.
+            </h2>
+            <ul>
+              <li>Docker and Docker Compose: we recommend using <a target="_blank" href="https://github.com/google/cadvisor">cadvisor</a> to collect system metrics from Docker.</li>
+              <li>Kubernetes: <a target="_blank" href="https://github.com/splunk/splunk-connect-for-kubernetes">Splunk Connect for Kubernetes</a>
+          </li>
+              <li>Collectd: <a target="_blank" href="https://docs.splunk.com/Documentation/Infrastructure/1.2.3/Admin/ManageAgents">Installing CollectD for Splunk</a>
+          </li>
+              <li>IBM Cloud Platform: <a target="_blank" href="https://www.ibm.com/blogs/bluemix/2019/02/solving-business-problems-with-splunk-on-ibm-cloud-kubernetes-service/">IBM Cloud Platform</a>
+          </li>
+              <li>Microsoft Azure: <a target="_blank" href="https://splunkbase.splunk.com/app/3110/">Splunk Add-on for Microsoft Cloud Services</a>
+          </li>
+              <li>AWS Cloudwatch: <a target="_blank" href="https://www.splunk.com/blog/2018/10/30/working-with-aws-cloudwatch-metrics.html">Metrics with Splunk and AWS</a>
+          </li>
+              <li>GCP Stackdriver: <a target="_blank" href="https://splunkbase.splunk.com/app/3088/">Splunk Add-on for Google Cloud</a>
+          </li>
+            </ul>
+
+            <h2>2. Edit this <strong>
+                <a href="/manager/splunk-app-quorum/admin/macros/system_metrics?action=edit&amp;ns=splunk-app-quorum&amp;f_ns=splunk-app-quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-app-quorum%2Fadmin%2Fmacros%2Fsystem_metrics" target="_blank">Macro</a>
+              </strong> with your index and sourcetype. By default the macro is set to: index=metrics AND metric_name="docker.*".  Note: You will need to <a href="/manager/splunk-app-quorum/data/indexes" target="_blank">create a metrics index</a> if you haven't already. </h2>
+              <h2>3. If configured correctly you will see data populating the chart to the right.</h2>
+
+      </html>
+    </panel>
+    <panel>
+      <chart>
+        <search>
+          <query>| mstats count WHERE `system_metrics` span=10s
+| timechart partial=f sum(count) as "system_metric_count" span=10s</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>1m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">239</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+</dashboard>
+
