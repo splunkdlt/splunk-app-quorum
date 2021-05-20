@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: version
-        run: echo "::set-output name=version::$(cat splunk-app-quorum/default/app.conf | grep version | head -1 | awk '{split($0,a," "); print a[3]}')"
+        run: echo "::set-output name=version::$(cat splunk_app_quorum/default/app.conf | grep version | head -1 | awk '{split($0,a," "); print a[3]}')"
         id: version
       - name: package
         run: tar -cvzf splunk_app_quorum.tgz splunk_app_quorum

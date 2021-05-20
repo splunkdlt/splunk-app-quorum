@@ -125,7 +125,7 @@
     </row>
     <row>
         <panel>
-            <viz type="splunk-app-quorum.sankey_diagram">
+            <viz type="splunk_app_quorum.sankey_diagram">
                 <title>Sankey From/To</title>
                 <search>
                     <query>`eth_txn_logs` sourcetype="ethereum:transaction" status=success
@@ -142,24 +142,24 @@
                 <option name="drilldown">none</option>
                 <option name="height">425</option>
                 <option name="refresh.display">none</option>
-                <option name="splunk-app-quorum.sankey_diagram.colorMode">categorical</option>
-                <option name="splunk-app-quorum.sankey_diagram.maxColor">#3fc77a</option>
-                <option name="splunk-app-quorum.sankey_diagram.minColor">#d93f3c</option>
-                <option name="splunk-app-quorum.sankey_diagram.numOfBins">6</option>
-                <option name="splunk-app-quorum.sankey_diagram.showBackwards">false</option>
-                <option name="splunk-app-quorum.sankey_diagram.showLabels">true</option>
-                <option name="splunk-app-quorum.sankey_diagram.showLegend">true</option>
-                <option name="splunk-app-quorum.sankey_diagram.showSelf">false</option>
-                <option name="splunk-app-quorum.sankey_diagram.showTooltip">true</option>
-                <option name="splunk-app-quorum.sankey_diagram.styleBackwards">false</option>
-                <option name="splunk-app-quorum.sankey_diagram.useColors">true</option>
+                <option name="splunk_app_quorum.sankey_diagram.colorMode">categorical</option>
+                <option name="splunk_app_quorum.sankey_diagram.maxColor">#3fc77a</option>
+                <option name="splunk_app_quorum.sankey_diagram.minColor">#d93f3c</option>
+                <option name="splunk_app_quorum.sankey_diagram.numOfBins">6</option>
+                <option name="splunk_app_quorum.sankey_diagram.showBackwards">false</option>
+                <option name="splunk_app_quorum.sankey_diagram.showLabels">true</option>
+                <option name="splunk_app_quorum.sankey_diagram.showLegend">true</option>
+                <option name="splunk_app_quorum.sankey_diagram.showSelf">false</option>
+                <option name="splunk_app_quorum.sankey_diagram.showTooltip">true</option>
+                <option name="splunk_app_quorum.sankey_diagram.styleBackwards">false</option>
+                <option name="splunk_app_quorum.sankey_diagram.useColors">true</option>
                 <option name="trellis.enabled">0</option>
                 <option name="trellis.scales.shared">1</option>
                 <option name="trellis.size">medium</option>
             </viz>
         </panel>
         <panel>
-            <viz type="splunk-app-quorum.force_directed">
+            <viz type="splunk_app_quorum.force_directed">
                 <title>Node Relationships</title>
                 <search>
                     <query>`eth_txn_logs` sourcetype="ethereum:transaction" status=success
@@ -173,39 +173,39 @@
                     <refreshType>delay</refreshType>
                 </search>
                 <option name="drilldown">none</option>
-                <option name="splunk-app-quorum.force_directed.AttractDistanceMax">200</option>
-                <option name="splunk-app-quorum.force_directed.AttractDistanceMin">60</option>
-                <option name="splunk-app-quorum.force_directed.AttractForceStrength">-300</option>
-                <option name="splunk-app-quorum.force_directed.CollisionIterations">1</option>
-                <option name="splunk-app-quorum.force_directed.CollisionRadius">30</option>
-                <option name="splunk-app-quorum.force_directed.CollisionStrength">0.7</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange1">5</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange1Code">#006d9c</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange2">20</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange2Code">#f8be34</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange3">100</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange3Code">#f1813f</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange4">1000</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange4Code">#dc4e41</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange5">1000000</option>
-                <option name="splunk-app-quorum.force_directed.ColorRange5Code">#d93f3c</option>
-                <option name="splunk-app-quorum.force_directed.ForceCollision">20</option>
-                <option name="splunk-app-quorum.force_directed.LineColor">enabled</option>
-                <option name="splunk-app-quorum.force_directed.LinkDistance">100</option>
-                <option name="splunk-app-quorum.force_directed.LinkLength">1</option>
-                <option name="splunk-app-quorum.force_directed.PanZoom">disabled</option>
-                <option name="splunk-app-quorum.force_directed.RepelDistanceMax">50</option>
-                <option name="splunk-app-quorum.force_directed.RepelDistanceMin">10</option>
-                <option name="splunk-app-quorum.force_directed.RepelForceStrength">-140</option>
-                <option name="splunk-app-quorum.force_directed.SWRange1">1</option>
-                <option name="splunk-app-quorum.force_directed.SWRange2">2</option>
-                <option name="splunk-app-quorum.force_directed.SWRange3">3</option>
-                <option name="splunk-app-quorum.force_directed.SWRange4">4</option>
-                <option name="splunk-app-quorum.force_directed.SWRange5">5</option>
-                <option name="splunk-app-quorum.force_directed.arrows">enabled</option>
-                <option name="splunk-app-quorum.force_directed.lowerRange">5</option>
-                <option name="splunk-app-quorum.force_directed.theme">dark</option>
-                <option name="splunk-app-quorum.force_directed.upperRange">5</option>
+                <option name="splunk_app_quorum.force_directed.AttractDistanceMax">200</option>
+                <option name="splunk_app_quorum.force_directed.AttractDistanceMin">60</option>
+                <option name="splunk_app_quorum.force_directed.AttractForceStrength">-300</option>
+                <option name="splunk_app_quorum.force_directed.CollisionIterations">1</option>
+                <option name="splunk_app_quorum.force_directed.CollisionRadius">30</option>
+                <option name="splunk_app_quorum.force_directed.CollisionStrength">0.7</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange1">5</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange1Code">#006d9c</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange2">20</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange2Code">#f8be34</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange3">100</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange3Code">#f1813f</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange4">1000</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange4Code">#dc4e41</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange5">1000000</option>
+                <option name="splunk_app_quorum.force_directed.ColorRange5Code">#d93f3c</option>
+                <option name="splunk_app_quorum.force_directed.ForceCollision">20</option>
+                <option name="splunk_app_quorum.force_directed.LineColor">enabled</option>
+                <option name="splunk_app_quorum.force_directed.LinkDistance">100</option>
+                <option name="splunk_app_quorum.force_directed.LinkLength">1</option>
+                <option name="splunk_app_quorum.force_directed.PanZoom">disabled</option>
+                <option name="splunk_app_quorum.force_directed.RepelDistanceMax">50</option>
+                <option name="splunk_app_quorum.force_directed.RepelDistanceMin">10</option>
+                <option name="splunk_app_quorum.force_directed.RepelForceStrength">-140</option>
+                <option name="splunk_app_quorum.force_directed.SWRange1">1</option>
+                <option name="splunk_app_quorum.force_directed.SWRange2">2</option>
+                <option name="splunk_app_quorum.force_directed.SWRange3">3</option>
+                <option name="splunk_app_quorum.force_directed.SWRange4">4</option>
+                <option name="splunk_app_quorum.force_directed.SWRange5">5</option>
+                <option name="splunk_app_quorum.force_directed.arrows">enabled</option>
+                <option name="splunk_app_quorum.force_directed.lowerRange">5</option>
+                <option name="splunk_app_quorum.force_directed.theme">dark</option>
+                <option name="splunk_app_quorum.force_directed.upperRange">5</option>
                 <option name="height">424</option>
                 <option name="refresh.display">none</option>
                 <option name="trellis.enabled">0</option>
