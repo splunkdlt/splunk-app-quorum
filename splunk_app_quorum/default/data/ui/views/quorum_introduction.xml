@@ -9,25 +9,25 @@
             <h2>This page will help you get your data sources configured properly and validate if they are comming in correctly.  Once you have completed these steps the existing dashboards in this App should start working.  These searches and dashboards are just the beginning of what can be monitored in your environment! </h2>
             <h3>Please note the links for Macros below are made to work with the "Admin" user.  If you are using another user, you can still edit the Macros by going to Settings --&gt; Advanced Search --&gt; Macros.  </h3>
           </p>
-           <p>
+          <p>
             <h2>In order for these dashboards to work please make sure your data sources are configured correctly by using the <strong>
-                <a href="/app/splunk_app_quorum/data_setup" target="_blank">Data Setup</a>
-              </strong> dashboard.</h2>
+              <a href="/app/splunk_app_quorum/data_setup" target="_blank">Data Setup</a>
+            </strong> dashboard.</h2>
           </p>
         </center>
       </html>
     </panel>
   </row>
-   <row>
+  <row>
     <panel>
       <html>
         <center>
           <h1>
-            <a href="/app/splunk_app_quorum/quorum_data" target="_blank">Raw Data Flow</a>
+            <a href="/app/splunk_app_quorum/besu_ops" target="_blank">Besu OPs</a>
           </h1>
         </center>
         <center>
-          <img src="/static/app/splunk_app_quorum/q_raw_data_flow.png"/>
+          <img src="/static/app/splunk_app_quorum/q_besu_ops.png"/>
         </center>
       </html>
     </panel>
@@ -35,7 +35,7 @@
       <html>
         <center>
           <h1>
-            <a href="/app/splunk_app_quorum/qstats" target="_blank">Infrastructure Health and Monitoring</a>
+            <a href="/app/splunk_app_quorum/qstats" target="_blank">GoQuorum OPs</a>
           </h1>
         </center>
         <center>
