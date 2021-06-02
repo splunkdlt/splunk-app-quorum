@@ -138,6 +138,46 @@
     </row>
     <row>
         <panel>
+            <table>
+                <search>
+                    <query>index=logs sourcetype=besu (Produced OR Imported)
+                        | rex field=message "Produced\s+\#(?&lt;block_number&gt;\S+) / (?&lt;txns&gt;\d+) tx / (?&lt;txns_pending&gt;\d+) pending / (?&lt;gas&gt;\d+) \((?&lt;gas_pct&gt;[^\)]+)\) gas / \((?&lt;block_hash&gt;\w+)\)"
+                        | rex field=message "Imported\s+\#(?&lt;block_number&gt;\S+) / (?&lt;txns&gt;\d+) tx / (?&lt;txns_pending&gt;\d+) pending / (?&lt;gas&gt;\d+) \((?&lt;gas_pct&gt;[^\)]+)\) gas / \((?&lt;block_hash&gt;\w+)\)"
+                        | rex field=message "Imported\s+\#(?&lt;block_number&gt;\S+) / (?&lt;txns&gt;\d+) tx / (?&lt;om&gt;\d+) om / (?&lt;gas&gt;\d+) \((?&lt;gas_pct&gt;[^\)]+)\) gas / \((?&lt;block_hash&gt;\w+)\)"
+                        | rex field=message "Imported\s+\#(?&lt;block_number&gt;\S+) / (?&lt;txns&gt;\d+) tx / (?&lt;om&gt;\d+) om / (?&lt;gas&gt;\d+) \((?&lt;gas_pct&gt;[^\)]+)\) gas / \((?&lt;block_hash&gt;\w+)\) in (?&lt;import_time&gt;\S+)\. Peers\: (?&lt;peers&gt;\d+)"
+                        | rex field=block_number mode=sed "s/,//g"
+                        | eventstats max(block_number) as maxBlock
+                        | stats latest(block_number) as block latest(maxBlock) as maxBlock latest(txns) as txns sparkline(avg(txns)) as txns_history latest(gas) as gas latest(peers) as peers sparkline(avg(peers)) as peers_history by host
+                        | eval blocks_behind=maxBlock-block
+                        | table host block blocks_behind txns txns_history gas peers peers_history | makemv delim="£" peers_history
+                        | eval peers_history=replace((peers_history),",0","")
+                        | makemv delim="," peers_history</query>
+                    <earliest>-60m@m</earliest>
+                    <latest>now</latest>
+                    <sampleRatio>1</sampleRatio>
+                    <refresh>30s</refresh>
+                    <refreshType>delay</refreshType>
+                </search>
+                <option name="count">20</option>
+                <option name="dataOverlayMode">none</option>
+                <option name="drilldown">cell</option>
+                <option name="percentagesRow">false</option>
+                <option name="refresh.display">none</option>
+                <option name="rowNumbers">false</option>
+                <option name="totalsRow">false</option>
+                <option name="wrap">true</option>
+                <format type="color" field="peers">
+                    <colorPalette type="minMidMax" maxColor="#294E70" minColor="#3C444D"></colorPalette>
+                    <scale type="minMidMax"></scale>
+                </format>
+                <drilldown>
+                    <set token="t_host">$click.value$</set>
+                </drilldown>
+            </table>
+        </panel>
+    </row>
+    <row>
+        <panel>
             <html>
                 <center>
                     <h1>
@@ -150,7 +190,7 @@
     <row>
         <panel>
             <chart>
-                <title>CPU (%)</title>
+                <title>CPU (%) for Host</title>
                 <search>
                     <query>| mstats avg("system.cpu.load_average.1m") prestats=true WHERE "index"="metrics" $mstats_span$
                         | timechart avg("system.cpu.load_average.1m") AS cpu $timechart_span$
@@ -173,7 +213,7 @@
                 <option name="charting.fieldDashStyles">{"Avg":"solid","system_cpu_procload":"solid","system_cpu_sysload":"solid","system_cpu_syswait":"solid"}</option>
                 <option name="charting.gridLinesX.showMajorLines">1</option>
                 <option name="charting.legend.mode">standard</option>
-                <option name="charting.legend.placement">bottom</option>
+                <option name="charting.legend.placement">none</option>
                 <option name="displayview">analytics_workspace</option>
                 <option name="height">200</option>
                 <option name="refresh.display">none</option>
@@ -333,6 +373,129 @@
                 <option name="trellis.enabled">0</option>
                 <option name="trellis.scales.shared">1</option>
                 <option name="trellis.size">medium</option>
+            </chart>
+        </panel>
+    </row>
+    <row>
+        <panel depends="$t_host$">
+            <html>
+                <center>
+                    <h1>
+                        Container Metrics for $t_host$
+                    </h1>
+                </center>
+            </html>
+        </panel>
+    </row>
+    <row depends="$t_host$">
+        <panel>
+            <chart>
+                <title>cpu.usage_rate</title>
+                <search>
+                    <query>| mstats rate_avg("container_cpu_system_seconds_total") chart=true WHERE "index"="metrics" $mstats_span$ chart.useother=false chart.agg=max chart.limit=top20 BY id
+                        | rename "/docker/*" AS *
+                        | fields _time "$t_host$*"</query>
+                    <earliest>$global_time_tok.earliest$</earliest>
+                    <latest>$global_time_tok.latest$</latest>
+                    <refresh>2m</refresh>
+                    <refreshType>delay</refreshType>
+                </search>
+                <option name="charting.axisTitleX.visibility">collapsed</option>
+                <option name="charting.axisTitleY.visibility">collapsed</option>
+                <option name="charting.axisY.abbreviation">auto</option>
+                <option name="charting.axisY.includeZero">1</option>
+                <option name="charting.chart">line</option>
+                <option name="charting.chart.nullValueMode">connect</option>
+                <option name="charting.drilldown">none</option>
+                <option name="charting.fieldColors">{"Avg":"#a65c7d"}</option>
+                <option name="charting.gridLinesX.showMajorLines">1</option>
+                <option name="charting.legend.mode">standard</option>
+                <option name="charting.legend.placement">none</option>
+                <option name="refresh.display">progressbar</option>
+            </chart>
+        </panel>
+        <panel>
+            <chart>
+                <title>memory.usage</title>
+                <search>
+                    <query>| mstats avg("container_memory_usage_bytes") prestats=true WHERE "index"="metrics" span=5s BY id
+                        | timechart $timechart_span$ avg("container_memory_usage_bytes") useother=false BY id WHERE max in top20
+                        | rename "/docker/*" AS *
+                        | fields _time "$t_host$*"</query>
+                    <earliest>$global_time_tok.earliest$</earliest>
+                    <latest>$global_time_tok.latest$</latest>
+                    <refresh>2m</refresh>
+                    <refreshType>delay</refreshType>
+                </search>
+                <option name="charting.axisTitleX.visibility">collapsed</option>
+                <option name="charting.axisTitleY.visibility">collapsed</option>
+                <option name="charting.axisY.abbreviation">auto</option>
+                <option name="charting.axisY.includeZero">1</option>
+                <option name="charting.chart">line</option>
+                <option name="charting.chart.nullValueMode">connect</option>
+                <option name="charting.drilldown">none</option>
+                <option name="charting.fieldColors">{"Avg":"#a65c7d","Avg (-1d)":"#C18EA5"}</option>
+                <option name="charting.fieldDashStyles">{"Avg (-1d)":"shortDot"}</option>
+                <option name="charting.gridLinesX.showMajorLines">1</option>
+                <option name="charting.legend.mode">standard</option>
+                <option name="charting.legend.placement">none</option>
+                <option name="refresh.display">progressbar</option>
+            </chart>
+        </panel>
+        <panel>
+            <chart>
+                <title>network.bytes</title>
+                <search>
+                    <query>| mstats avg("container_network_transmit_bytes_total") prestats=true WHERE "index"="metrics" span=5s BY id
+                        | timechart avg("container_network_transmit_bytes_total") $timechart_span$ useother=false BY id WHERE max in top20
+                        | rename "/docker/*" AS *
+                        | fields _time "$t_host$*"</query>
+                    <earliest>$global_time_tok.earliest$</earliest>
+                    <latest>$global_time_tok.latest$</latest>
+                    <refresh>2m</refresh>
+                    <refreshType>delay</refreshType>
+                </search>
+                <option name="charting.axisTitleX.visibility">collapsed</option>
+                <option name="charting.axisTitleY.visibility">collapsed</option>
+                <option name="charting.axisY.abbreviation">auto</option>
+                <option name="charting.axisY.includeZero">1</option>
+                <option name="charting.chart">line</option>
+                <option name="charting.chart.nullValueMode">connect</option>
+                <option name="charting.drilldown">none</option>
+                <option name="charting.fieldColors">{"Avg":"#a65c7d","Avg (-1d)":"#C18EA5"}</option>
+                <option name="charting.fieldDashStyles">{"Avg (-1d)":"shortDot"}</option>
+                <option name="charting.gridLinesX.showMajorLines">1</option>
+                <option name="charting.legend.mode">standard</option>
+                <option name="charting.legend.placement">none</option>
+                <option name="refresh.display">progressbar</option>
+            </chart>
+        </panel>
+        <panel>
+            <chart>
+                <title>filesystem_usage</title>
+                <search>
+                    <query>| mstats avg("container_fs_usage_bytes") prestats=true WHERE "index"="metrics" span=5s BY id
+                        | timechart avg("container_fs_usage_bytes") $timechart_span$ useother=false BY id WHERE max in top20
+                        | rename "/docker/*" AS *
+                        | fields _time "$t_host$*"</query>
+                    <earliest>$global_time_tok.earliest$</earliest>
+                    <latest>$global_time_tok.latest$</latest>
+                    <refresh>2m</refresh>
+                    <refreshType>delay</refreshType>
+                </search>
+                <option name="charting.axisTitleX.visibility">collapsed</option>
+                <option name="charting.axisTitleY.visibility">collapsed</option>
+                <option name="charting.axisY.abbreviation">auto</option>
+                <option name="charting.axisY.includeZero">1</option>
+                <option name="charting.chart">line</option>
+                <option name="charting.chart.nullValueMode">connect</option>
+                <option name="charting.drilldown">none</option>
+                <option name="charting.fieldColors">{"Avg":"#a65c7d","Avg (-1d)":"#C18EA5"}</option>
+                <option name="charting.fieldDashStyles">{"Avg (-1d)":"shortDot"}</option>
+                <option name="charting.gridLinesX.showMajorLines">1</option>
+                <option name="charting.legend.mode">standard</option>
+                <option name="charting.legend.placement">none</option>
+                <option name="refresh.display">progressbar</option>
             </chart>
         </panel>
     </row>
