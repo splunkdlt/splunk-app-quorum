@@ -33,7 +33,7 @@ There are a few dashboards provided to get you started with analyzing your Quoru
     * **Quorum Block and Transaction Data** - [Splunk Connect for Ethereum](https://github.com/splunk/splunk-connect-for-ethereum) is an open source agent that connects to each node on the Quorum network. See its README for deployment instructions. Docker, Kubernetes, and native deployments are all options.
 
     * **Quorum node logs and metrics** - You will need to [create event and metric indexes](https://docs.splunk.com/Documentation/Splunk/latest/Indexer/Setupmultipleindexes) in Splunk as well as an input mechanism to receive the data.  We usually like to create an index called “ethereum” and “metrics” and enable the Splunk HEC to receive data.  You can use the example “indexes.conf.example” provided in the app.  Simply rename the file from “indexes.conf.example” to “indexes.conf” to enable the indexes, and rename “inputs.conf.example” to “inputs.conf” to enable the HEC endpoints. You will also need to [enable the HTTP Event Collector (HEC)](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector#Configure_HTTP_Event_Collector_on_Splunk_Enterprise) to receive data if it has not been "enabled" already.  
-    ```
+    ```sh-session
     $ cd $SPLUNK_HOME/etc/apps/splunk_app_quorum/default
     $ sudo mv inputs.conf.example inputs.conf
     $ sudo mv indexes.conf.example indexes.conf
