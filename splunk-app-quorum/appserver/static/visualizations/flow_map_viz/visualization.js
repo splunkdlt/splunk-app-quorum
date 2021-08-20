@@ -428,6 +428,7 @@ define(["api/SplunkVisualizationBase"], function(__WEBPACK_EXTERNAL_MODULE_1__) 
 	                            submittedTokenModel.unset(tokens[m]);
 	                        }
 	                    }
+	                    console.log("Tokens cleared");
 	                });
 
 	                // we use our own fallback to canvas instead of the pixi one
@@ -810,6 +811,7 @@ define(["api/SplunkVisualizationBase"], function(__WEBPACK_EXTERNAL_MODULE_1__) 
 	            var submittedTokenModel = splunkjs.mvc.Components.get('submitted');
 	            for (var token_name in tokens) {
 	                if (tokens.hasOwnProperty(token_name)) {
+	                    console.log("Setting token $" + token_name + "$ to \"" + tokens[token_name] + "\"");
 	                    if (defaultTokenModel) {
 	                        defaultTokenModel.set(token_name, tokens[token_name]);
 	                    }
