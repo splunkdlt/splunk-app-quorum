@@ -371,7 +371,7 @@
                 <option name="underLabel">Transactions</option>
                 <option name="useColors">1</option>
                 <drilldown>
-                    <link target="_blank">/app/splunk_app_quorum/transactions</link>
+                    <link target="_blank">/app/splunk-app-quorum/transactions</link>
                 </drilldown>
             </single>
         </panel>
