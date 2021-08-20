@@ -112,6 +112,7 @@
   </row>
   <row>
     <panel>
+      <title>This panel requires the following app from Splunkbase: https://splunkbase.splunk.com/app/4657/</title>
       <viz type="splunk-app-quorum.flow_map_viz">
         <title>Data Flows: Green=Logs, Blue=Metrics</title>
         <search>
