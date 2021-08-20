@@ -2,7 +2,6 @@
  * Visualization source
  */
 define([
-    'jquery',
     'underscore',
     'api/SplunkVisualizationBase',
     'api/SplunkVisualizationUtils',
@@ -10,7 +9,6 @@ define([
     // Add required assets to this list
   ],
   function (
-    $,
     _,
     SplunkVisualizationBase,
     SplunkVisualizationUtils,
@@ -23,10 +21,9 @@ define([
 
       initialize: function () {
         SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
-        this.$el = $(this.el);
 
         // Add a css selector class
-        this.$el.addClass('splunk-forcedirected-meter');
+        this.el.classList.add('splunk-forcedirected-meter');
 
         // Initialization logic goes here
       },
@@ -150,14 +147,16 @@ define([
         var stringFill = stringColour(themeColor);
 
         // Clear the div
-        this.$el.empty();
+        while (this.el.firstChild) {
+            this.el.removeChild(this.el.lastChild);
+        }
 
         // Specify a radius, this is used to ensure nodes do not overlap.
         var radius = 12;
 
         // Specify a width and height that matches the Splunk console
-        var width = this.$el.width();
-        var height = this.$el.height();
+        var width = this.el.clientWidth;
+        var height = this.el.clientHeight;
 
         // Create nodes for each unique source and target.
         var nodesByName = {};

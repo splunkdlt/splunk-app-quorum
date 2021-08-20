@@ -27,5 +27,5 @@ jobs:
           splunkUser: ${{ secrets.SPLUNKBASE_USER }}
           splunkPassword: ${{ secrets.SPLUNKBASE_PASSWORD }}
           failOnError: true
-          failOnWarning: false
+          failOnWarning: true
           includedTags: cloud

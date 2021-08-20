@@ -16,7 +16,6 @@
   "dependencies": {
     "acorn": "^5.1.2",
     "d3": "^4.11.0",
-    "jquery": "^3.0.0",
     "underscore": "^1.8.3"
   }
 }
