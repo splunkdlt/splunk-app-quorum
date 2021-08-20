@@ -36,7 +36,7 @@
               1. Follow instructions for installing our <a target="_blank" href="https://github.com/splunk/splunk-connect-for-ethereum">Splunk Connect for Ethereum</a>
             </h2>
             <h2>2. Edit this <strong>
-                <a href="/manager/splunk_app_quorum/admin/macros/eth_txn_logs?action=edit&amp;ns=splunk_app_quorum&amp;f_ns=splunk_app_quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_app_quorum%2Fadmin%2Fmacros%2Feth_txn_logs" target="_blank">Macro</a>
+                <a href="/manager/splunk-app-quorum/admin/macros/eth_txn_logs?action=edit&amp;ns=splunk-app-quorum&amp;f_ns=splunk-app-quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-app-quorum%2Fadmin%2Fmacros%2Feth_txn_logs" target="_blank">Macro</a>
               </strong> with your index and sourcetype. By default the macro is set to: "index=ethereum"</h2>
               <h2>3. If configured correctly you will see data populating the chart to the right.</h2>
       </html>
@@ -83,14 +83,14 @@
           </p>
        </center>
              <h2>
-              1. These are logs and metrics specific to the Quorum nodes and transaction managers. Specifically, Quorum application logs, Geth metrics, RPC data polled from different Quorum node endpoints (i.e. admin_peers, txpool_content, etc -- see <a target="_blank" href="https://github.com/splunk/splunk-connect-for-ethereum">Splunk Connect for Ethereum</a> for more information). If you need to change these settings you will need to modify /app/splunk_app_quorum/default/inputs.conf
+              1. These are logs and metrics specific to the Quorum nodes and transaction managers. Specifically, Quorum application logs, Geth metrics, RPC data polled from different Quorum node endpoints (i.e. admin_peers, txpool_content, etc -- see <a target="_blank" href="https://github.com/splunk/splunk-connect-for-ethereum">Splunk Connect for Ethereum</a> for more information). If you need to change these settings you will need to modify /app/splunk-app-quorum/default/inputs.conf
             </h2>
             <h2>2. Edit this <strong>
-                <a href="/manager/splunk_app_quorum/admin/macros/eth_stats_logs?action=edit&amp;ns=splunk_app_quorum&amp;f_ns=splunk_app_quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_app_quorum%2Fadmin%2Fmacros%2Feth_stats_logs" target="_blank">Macro</a>
+                <a href="/manager/splunk-app-quorum/admin/macros/eth_stats_logs?action=edit&amp;ns=splunk-app-quorum&amp;f_ns=splunk-app-quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-app-quorum%2Fadmin%2Fmacros%2Feth_stats_logs" target="_blank">Macro</a>
               </strong> with your index and sourcetype for the quorum logs. By default the macro is set to: "index=main (sourcetype=docker:tessera OR sourcetype=docker:quorum-node)"</h2>
                <h2>3. Edit this <strong>
-                <a href="/manager/splunk_app_quorum/admin/macros/geth_metrics?action=edit&amp;ns=splunk_app_quorum&amp;f_ns=splunk_app_quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_app_quorum%2Fadmin%2Fmacros%2Fgeth_metrics" target="_blank">Macro</a>
-              </strong> with your index and sourcetype for Geth Metrics. By default the macro is set to: index=metrics AND (metric_name="eth.*"). Note: You will need to <a href="/manager/splunk_app_quorum/data/indexes" target="_blank">create a metrics index</a> if you haven't already.</h2>
+                <a href="/manager/splunk-app-quorum/admin/macros/geth_metrics?action=edit&amp;ns=splunk-app-quorum&amp;f_ns=splunk-app-quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-app-quorum%2Fadmin%2Fmacros%2Fgeth_metrics" target="_blank">Macro</a>
+              </strong> with your index and sourcetype for Geth Metrics. By default the macro is set to: index=metrics AND (metric_name="eth.*"). Note: You will need to <a href="/manager/splunk-app-quorum/data/indexes" target="_blank">create a metrics index</a> if you haven't already.</h2>
               <h2>4. If configured correctly you will see data populating the chart to the right.</h2>
       </html>
     </panel>
@@ -177,8 +177,8 @@
             </ul>
 
             <h2>2. Edit this <strong>
-                <a href="/manager/splunk_app_quorum/admin/macros/system_metrics?action=edit&amp;ns=splunk_app_quorum&amp;f_ns=splunk_app_quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk_app_quorum%2Fadmin%2Fmacros%2Fsystem_metrics" target="_blank">Macro</a>
-              </strong> with your index and sourcetype. By default the macro is set to: index=metrics AND metric_name="docker.*".  Note: You will need to <a href="/manager/splunk_app_quorum/data/indexes" target="_blank">create a metrics index</a> if you haven't already. </h2>
+                <a href="/manager/splunk-app-quorum/admin/macros/system_metrics?action=edit&amp;ns=splunk-app-quorum&amp;f_ns=splunk-app-quorum&amp;uri=%2FservicesNS%2Fnobody%2Fsplunk-app-quorum%2Fadmin%2Fmacros%2Fsystem_metrics" target="_blank">Macro</a>
+              </strong> with your index and sourcetype. By default the macro is set to: index=metrics AND metric_name="docker.*".  Note: You will need to <a href="/manager/splunk-app-quorum/data/indexes" target="_blank">create a metrics index</a> if you haven't already. </h2>
               <h2>3. If configured correctly you will see data populating the chart to the right.</h2>
 
       </html>
