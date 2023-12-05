@@ -1,3 +1,5 @@
+## Note: This repo is being archived in favor of the same repo under the Splunk Github account from which it was forked. Changes have been commited and merged into that repo.
+
 # OSS Quorum App for Splunk
 
 The OSS Quorum App for Splunk contains a set of dashboards and analytics to give you full visibility into the system metrics, application data and ledger so that you can maintain security, stability and performance for your Quorum deployment.  
